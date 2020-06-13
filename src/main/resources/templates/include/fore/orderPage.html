@@ -1,0 +1,138 @@
+
+
+<div th:fragment="html">
+    <script>
+        $(function(){
+            var data4Vue = {
+                uri:'orders',
+                orders: [],
+                orderItems: [],
+                order: [],
+                ordersTableVisible: false
+            };
+            //ViewModel
+            var vue = new Vue({
+                el: '#workingArea',
+                data: data4Vue,
+                mounted:function(){ //mounted　表示这个 Vue 对象加载成功了
+                    this.load();
+                },
+                methods: {
+                    load:function(){
+                        var url =  this.uri+"/a";
+                        axios.get(url).then(function(response) {
+                            vue.orders = response.data;
+                            console.log(vue.orders);
+                        });
+                    },
+                    dateFormat:function(row,column){
+                        var t=new Date(row.createTime);
+                        return t.getFullYear()+"-"+(t.getMonth()+1)+"-"+t.getDate()+" "+t.getHours()+":"+t.getMinutes()+":"+t.getSeconds();
+                    },
+                    showOrderItems: function(orderid){
+                        var url =  this.uri+'/details/'+orderid;
+                        axios.get(url).then(function(response) {
+                            vue.orderItems = response.data;
+                            for (let i = 0; i < vue.orderItems.length; i++) {
+                                vue.orderItems[i].totalPrice = vue.orderItems[i].number * vue.orderItems[i].price;
+                            }
+                            console.log(vue.orderItems);
+                        });
+                        this.ordersTableVisible = true;
+                    },
+                    confirmOrder:function(row){
+                        this.order = row;
+                        this.order.status = '已收货';
+                        console.log(this.order);
+                        let url =  this.uri;
+                        axios.put(url,this.order).then(function(response) {
+                            vue.$message({
+                                message: '收获成功',
+                                type: 'success'
+                            })
+                        });
+                    },
+                    filterStatus:function(value, row) {
+                        return row.status === value;
+                    },
+                }
+            });
+        })
+    </script>
+
+    <el-table
+            :data="orders"
+            max-height="550"
+            style="width: 100%">
+        <el-table-column
+                prop="id"
+                label="订单编号"
+                width="120">
+        </el-table-column>
+        <el-table-column
+                prop="receiver"
+                label="收货人"
+                width="140">
+        </el-table-column>
+        <el-table-column
+                prop="address"
+                label="收货地址"
+                width="180">
+        </el-table-column>
+        <el-table-column
+                prop="tel"
+                label="电话"
+                width="160">
+        </el-table-column>
+        <el-table-column
+                prop="postcode"
+                label="邮编"
+                width="140">
+        </el-table-column>
+        <el-table-column
+                prop="createTime"
+                label="下单时间"
+                :formatter="dateFormat"
+                sortable
+                width="160">
+        </el-table-column>
+        <el-table-column
+                prop="status"
+                label="状态"
+                width="160"
+                :filters="[{ text: '待发货', value: '待发货' }, { text: '已发货', value: '已发货' }, { text: '已收货', value: '已收货' }, { text: '已评价', value: '已评价' }]"
+                :filter-method="filterStatus">
+            <template slot-scope="scope">
+                <el-tag
+                        effect="dark"
+                        :type="scope.row.status=='待发货'? 'danger': scope.row.status=='已发货'?'primary':'success'"
+                >{{scope.row.status}}</el-tag>
+            </template>
+
+        </el-table-column>
+        <el-table-column label="操作">
+            <template slot-scope="scope">
+                <el-button
+                        size="mini"
+                        type="warning"
+                        @click="showOrderItems(scope.row.id)">查看物品</el-button>
+                <el-button
+                        v-if="scope.row.status=='已发货'"
+                        size="mini"
+                        type="danger"
+                        @click="confirmOrder(scope.row)">确认收货</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+
+    <el-dialog title="订单详情" :visible.sync="ordersTableVisible">
+        <el-table :data="orderItems"
+                  width="70%"
+                  show-summary>
+            <el-table-column property="goodsName" label="商品名称" width="200"></el-table-column>
+            <el-table-column property="number" label="购买数量" width="180"></el-table-column>
+            <el-table-column property="price" label="单价" width="180"></el-table-column>
+            <el-table-column property="totalPrice" label="小计"  width="180"></el-table-column>
+        </el-table>
+    </el-dialog>
+</div>

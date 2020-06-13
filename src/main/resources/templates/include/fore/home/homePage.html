@@ -1,0 +1,74 @@
+
+
+<div th:fragment="html">
+    <script>
+        $(function(){
+            var data4Vue = {
+                uri:'goods',
+                categories: [],
+                products: [],
+                allProducts: [],
+                selectVal: ''
+            };
+            //ViewModel
+            var vue = new Vue({
+                el: '#workingArea',
+                data: data4Vue,
+                mounted:function(){ //mounted　表示这个 Vue 对象加载成功了
+                    linkDefaultActions();
+                    this.load();
+                },
+                methods: {
+                    load: function () {
+                        var url = this.uri + "/type";
+                        let url2 = this.uri + "/all";
+                        axios.get(url).then(function (response) {
+                            vue.categories = response.data;
+                        });
+                        axios.get(url2).then(function (response) {
+                            vue.allProducts = response.data;
+                            vue.products = response.data;
+                        });
+                    },
+                    queryData:function() {
+                        let search = this.selectVal;
+                        this.products = this.allProducts.filter(function (product) {
+                            console.log('过滤', product);
+                            let searchField = { name: product.name};
+                            return Object.keys(searchField).some(function (key) {
+                                console.log('key值', key);
+                                return String(product[key]).toLowerCase().indexOf(search) > -1;
+                            });
+                        });
+                    }
+
+                },
+                filters:{
+                    subTitleFilter:function(value) {
+                        if (!value) return ''; //如果为空，则返回空字符串
+                        return value.split(" ")[0]; //根据空格拆分，并且只获取数组第一个值
+                    }
+                }
+            });
+
+
+        });
+
+    </script>
+
+    <title>电竞外设商城</title>
+    <img  src="http://localhost:8080/img/site/logo.gif"  height="150" width="300"  class="logo">
+    <form >
+        <div class="searchDiv">
+            <el-input v-model="selectVal"></el-input>
+            <el-button @click="queryData">搜索</el-button>
+        </div>
+    </form>
+    <div class="homepageDiv">
+        <div th:replace="include/fore/home/categoryAndcarousel::html" ></div>
+    </div>
+</div>
+
+
+
+

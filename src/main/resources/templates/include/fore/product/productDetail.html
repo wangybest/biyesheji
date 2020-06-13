@@ -1,0 +1,22 @@
+
+
+<div th:fragment="html"> 
+	<div class="productDetailDiv" v-show="showDetail" >
+		<div class="productDetailTopPart">
+			<a href="#nowhere" class="productDetailTopPartSelectedLink selected">商品详情</a>
+			<a href="#nowhere" class="productDetailTopReviewLink" @click="toggle2Review">累计评价 <span class="productDetailTopReviewLinkNumber">{{p.reviewCount}}</span> </a>
+		</div>
+
+		<div class="productParamterPart">
+			<div class="productParamter">产品详情：</div>
+			<div class="productParamterList">
+
+				{{p.info}}
+			</div>
+			<div style="clear:both"></div>
+		</div>
+		
+
+	</div>
+</div>
+

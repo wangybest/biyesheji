@@ -1,0 +1,95 @@
+
+
+<div th:fragment="html">
+    <script>
+        $(function(){
+            var pid = getUrlParms("pid");
+            var data4Vue = {
+                uri:'goods',
+                uri2: 'cart',
+                url:'http://localhost:8080/img/photos/',//图片路径
+                p:'',//返回产品信息
+                cart: {goodsId:'',goodsName:'',number: ''},
+                // orderdetails:{orderId:'',goodsId:'',goodsName:'',number:'',unitPrice:'',price:''},
+                // orders:{userId:'',receiver:'',address:'',tel:'',postcode:'',status:''},
+                // drawer: false,
+                category:null,
+                firstProductImage:null,
+                pvs:[],
+                reviews:[],
+                reviewsCount:'',
+                showDetail:true,
+                showReview:false,
+                user:{name:'', password:''}
+            };
+            //ViewModel
+            var vue = new Vue({
+                el: '#workingArea',
+                data: data4Vue,
+                mounted:function(){ //mounted　表示这个 Vue 对象加载成功了
+                    linkDefaultActions();
+                    this.load();
+                },
+                methods: {
+                    load:function(){
+                        var url =  this.uri+"/"+pid;
+                        axios.get(url).then(function(response) {
+                            var result = response.data;
+                            vue.p=result;
+                            console.log(vue.p);
+                        });
+                        axios.get('comment/'+pid).then(function(response)  {
+                            vue.reviews = response.data;
+                            vue.reviewsCount = response.data.length;
+                            console.log(vue.reviews);
+
+                        })
+
+                    },
+                    addCart: function () {
+                        var url = this.uri2;
+                        this.cart.goodsId = this.p.id;
+                        this.cart.goodsName = this.p.name;
+                        console.log(this.p.id);
+                        axios.post(url, this.cart).then(function (response) {
+                            // console.log(response.data);
+                            if (response.data.code == 200) {
+                                vue.$message({
+                                    message: '添加购物车成功',
+                                    type: 'success'
+                                });
+                            } else {
+                                vue.$message.error('添加失败,请登录');
+                            }
+                        });
+                    },
+                    buy: function () {
+                        this.addCart();
+                        location.href = "cart";
+                    },
+                    toggle2Detail:function(){
+                        this.showDetail=true;
+                        this.showReview=false;
+                    },
+                    toggle2Review:function(){
+                        this.showDetail=false;
+                        this.showReview=true;
+                    }
+                }
+            });
+
+
+        });
+    </script>
+
+    <title>电竞外设商城 -- {{p.name}}</title>
+<!--    <div class="categoryPictureInProductPageDiv">-->
+<!--        <img v-if="category!=null" class="categoryPictureInProductPage" :src="'img/category/'+category.id+'.jpg'">-->
+<!--    </div>-->
+    <div class="productPageDiv">
+        <div th:replace="include/fore/product/imgAndInfo::html" ></div>
+        <div th:replace="include/fore/product/productReview::html" ></div>
+        <div th:replace="include/fore/product/productDetail::html" ></div>
+<!--        <div th:replace="include/fore/product/buyPage::html" ></div>-->
+    </div>
+</div>

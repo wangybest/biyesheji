@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/fore/header::html" ></head>
+<body>
+<style>
+
+
+    .el-card__header {
+        background-color: #b9def0;
+        text-align: center;
+    }
+
+    .box-card {
+        width: 680px;
+        margin: 0 auto;
+    }
+</style>
+<div id="workingArea">
+    <div th:replace="include/fore/top::html" ></div>
+    <div th:replace="include/fore/userinfoPage::html" ></div>
+    <div th:replace="include/fore/footer::html" ></div>
+</div>
+</body>
+</html>

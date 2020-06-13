@@ -1,0 +1,38 @@
+
+
+<div th:fragment="html">
+    <el-drawer
+            :visible.sync="drawer"
+            size=70%
+            >
+   <!--     <el-form ref="ordersForm" :model="orders" >
+            <el-form-item label="收件人" prop="receiver">
+                <el-input v-model="orders.receiver"></el-input>
+            </el-form-item>
+            <el-form-item label="收件地址" prop="address">
+                <el-input v-model="orders.address"></el-input>
+            </el-form-item>
+            <el-form-item label="收货电话" prop="tel">
+                <el-input v-model="orders.tel"></el-input>
+            </el-form-item>
+            <el-form-item label="邮编" prop="postcode">
+                <el-input v-model="orders.postcode"></el-input>
+            </el-form-item>
+        </el-form>-->
+        <el-table  :data="orderdetails">
+            <el-table-column
+                    prop="goodsName"
+                    label="商品">
+            </el-table-column>
+            <el-table-column
+                    prop="number"
+                    label="数量">
+            </el-table-column>
+            <el-table-column
+                    prop="price"
+                    label="小计">
+            </el-table-column>
+        </el-table>
+    </el-drawer>
+</div>
+

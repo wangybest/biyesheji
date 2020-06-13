@@ -1,0 +1,188 @@
+<div th:fragment="html">
+    <script>
+        $(function(){
+            var checkMobile = (rule, value, callback) => {
+                const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+                if (regMobile.test(value)) {
+                    return callback();
+                }
+                callback(new Error("请输入合法的手机号"));
+            };
+            var data4Vue = {
+                uri: 'cart',
+                uri2: 'orders',
+                purl:'http://localhost:8080/img/photos/',
+                cart:[{id:'',useId:'',goodsId:'',goodsName:'',number:'',price:'',picture:''}],
+                totalPrice: '',
+                FormVisible: false,
+                orderdetailsList: [],
+                goods: [],
+                orders:{receiver:'user',address:'user',tel:'15869196095',postcode:'000000',status:''},
+                orderdetails: [{orderId:'',goodsId:'',goodsName:'',number:'',unitPrice:'',price:''}],
+                rules: {
+                    receiver: [
+                        {required: true, message: '请输入收货人姓名', trigger: 'blur'}
+                    ],
+                    address: [
+                        {required: true, message: '请输入收货人地址', trigger: 'blur'}
+                    ],
+                    tel: [
+                        {required: true, message: '请输入收货人姓名', trigger: 'blur'},
+                        { validator: checkMobile, trigger: "blur" },
+                    ],
+                    postcode: [
+                        {required: true, message: '请输入邮编', trigger: 'blur'},
+                        { min: 6, max: 6, message: '邮编为6位', trigger: 'blur' }
+                    ],
+                }
+            };
+            //ViewModel
+            var vue = new Vue({
+                el: '#workingArea',
+                data: data4Vue,
+                mounted:function(){
+                    this.load();
+                },
+                methods: {
+                    load: function () {
+                        var url = this.uri + "/a";
+                        axios.get(url).then(function (response) {
+                            vue.cart = response.data;
+                        });
+                    },
+                    deleteCart: function (id) {
+                        var url = this.uri+"/"+id;
+                        axios.delete(url).then(function(response){
+                            if(response.status==200){
+                                vue.$message('删除成功');
+                                vue.load();
+                            }
+                            else{
+                                vue.$message.error('删除失败');
+                            }
+                        });
+                    },
+                    count() {
+                        if (this.orderdetailsList.length==0) {
+                            this.$message.error('请至少选择一个产品');
+                        }else {
+                            var url = this.uri + "/count";
+                            axios.post(url, this.orderdetailsList).then(function (response) {
+                                vue.totalPrice = response.data;
+                            });
+                            this.FormVisible = true;
+                        }
+                    },
+                    makeOrder: function (formName) {
+                        this.$refs[formName].validate((valid)=>{
+                            if(valid) {
+                                var url = this.uri2;
+                                console.log(this.orders);
+                                console.log(this.orderdetailsList);
+                                axios.post(url,{orders: this.orders, orderdetailsList: this.orderdetailsList} ).then(function (response) {
+                                    if (response.data.code == 200) {
+                                        vue.$message({
+                                            message: response.data.data,
+                                            type: 'success'
+                                        });
+                                        vue.FormVisible = false;
+                                        setInterval(location.href="alipay", 3000);
+                                    } else {
+                                        vue.$message.error(response.data.message);
+                                    }
+                                });
+                            }})
+                    },
+                    handleSelectionChange(val) {
+                        this.orderdetailsList = val;
+                        console.log(this.orderdetailsList);
+                    }
+                }
+            });
+
+        })
+    </script>
+
+    <title>购物车</title>
+    <div class="cartDiv">
+        <h3>我的购物车</h3>
+        <el-table
+                :data="cart"
+                border
+                style="width: 100%"
+                @selection-change="handleSelectionChange">
+            <el-table-column
+                    type="selection"
+                    width="55">
+            </el-table-column>
+            <el-table-column
+                    prop="picture"
+                    label="产品图片"
+                    width="180">
+                <template   slot-scope="scope">
+                    <el-image
+                            style="width: 140px; height: 60px"
+                            fit="scale-down"
+                            :src="purl+ scope.row.picture"
+                            :preview-src-list="[purl+ scope.row.picture]"
+                    >
+                    </el-image>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="goodsName"
+                    label="商品名称"
+            >
+            </el-table-column>
+            <el-table-column
+                    prop="price"
+                    label="商品单价"
+            >
+            </el-table-column>
+            <el-table-column
+                    prop="number"
+                    label="数量"
+                    >
+            </el-table-column>
+            <el-table-column label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="deleteCart(scope.row.id)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-button type="success" @click="count()" plain>结算</el-button>
+    </div>
+    <el-dialog title="下单页面" :visible.sync="FormVisible">
+        <el-row>
+            <el-col :span="12"> <el-tag type="danger">产品总价为：</el-tag></el-col>
+            <el-col :span="12"><h2 style="color: cornflowerblue">{{totalPrice}}</h2></el-col>
+        </el-row>
+        <el-alert
+            title="请输入收货人信息"
+            type="info"
+            center
+            show-icon>
+    </el-alert>
+        <el-form :model="orders"  ref="orders"  :rules="rules"  label-width="100px">
+            <el-form-item label="收货人" prop="receiver">
+                <el-input v-model="orders.receiver" ></el-input>
+            </el-form-item>
+            <el-form-item label="收货地址" prop="address">
+                <el-input v-model="orders.address" ></el-input>
+            </el-form-item>
+            <el-form-item label="收货电话" prop="tel">
+                <el-input v-model="orders.tel" ></el-input>
+            </el-form-item>
+            <el-form-item label="邮编" prop="postcode">
+                <el-input v-model="orders.postcode" ></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="makeOrder('orders')">下单</el-button>
+        </div>
+    </el-dialog>
+</div>

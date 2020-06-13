@@ -1,0 +1,118 @@
+<div th:fragment="html">
+    <script>
+        $(function(){
+            var checkEmail = (rule, value, callback) => {
+                const regEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                if (regEmail.test(value)) {
+                    return callback();
+                }
+                callback(new Error("请输入合法的邮箱"));
+            };
+            var checkMobile = (rule, value, callback) => {
+                const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+                if (regMobile.test(value)) {
+                    return callback();
+                }
+                callback(new Error("请输入合法的手机号"));
+            };
+            var checkPass = (rule, value, callback) => {
+                if (value === "") {
+                    callback(new Error("请再次输入密码"));
+                } else if (value !== vue.user.password) {
+                    callback(new Error("两次输入密码不一致!"));
+                } else {
+                    callback();
+                }
+            };
+            var data4Vue = {
+                uri:'user/register',
+                user:{name:'', password:'', repassword:'',gender:'',email:'', tel: ''},
+                rules: {
+                    name: [
+                        {required: true, message: '请输入产品名称', trigger: 'blur'}
+                    ],
+                    password: [
+                        {required: true,message: '密码不能为空', trigger: 'blur'},
+                        { min: 5, message: '密码不能小于5个字符', trigger: 'blur' }
+                    ],
+                    repassword:[
+                        { validator: checkPass, trigger: "blur" },
+
+                    ],
+                    email: [
+                        {required:true,message:'请输入邮箱',trigger:'blur'},
+                        { validator: checkEmail, trigger: "blur" },
+                    ],
+                    tel: [
+                        {required:true,message:'请输入手机号',trigger:'blur'},
+                        { validator: checkMobile, trigger: "blur" },
+                    ]
+
+                }
+            };
+            //ViewModel
+            var vue = new Vue({
+                el: '#workingArea',
+                data: data4Vue,
+           /*     mounted:function(){
+                    linkDefaultActions();
+                },*/
+                methods: {
+                    register:function(formName){
+                        this.$refs[formName].validate((valid)=>{
+                            if(valid) {
+                                var url = this.uri;
+                                axios.post(url, this.user).then(function (response) {
+                                    if (response.data.code == 200) {
+                                        vue.$message({
+                                            message: response.data.data,
+                                            type: 'success'
+                                        });
+                                        vue.setTimeout(location.href = "login", 10000);
+                                    } else {
+                                        vue.$message.error(response.data.message);
+                                    }
+                                });
+                            }})
+                    }
+                }
+            });
+        })
+    </script>
+    <div id="app">
+        <el-card class="box-card" >
+            <div slot="header" >
+                <h4>用户注册</h4>
+            </div>
+            <el-form   :model="user"  size="medium"  :rules="rules"  ref="userForm" label-width="auto" >
+                <el-form-item label="用户名"   prop="name" >
+                    <el-input v-model="user.name"  ></el-input>
+                </el-form-item>
+                <el-form-item label="用户密码"  prop="password" >
+                    <el-input v-model="user.password"  ></el-input>
+                </el-form-item>
+                <el-form-item label="请在此输入密码"  prop="repassword" >
+                    <el-input v-model="user.repassword"  ></el-input>
+                </el-form-item>
+                <el-form-item label="用户性别"   >
+                    <el-switch
+                            v-model="user.gender"
+                            active-text="女"
+                            inactive-text="男"
+                            active-value="女"
+                            inactive-value="男"
+                            active-color="#FF4949"
+                            inactive-color="#409EFF">
+                    </el-switch>
+                </el-form-item>
+                <el-form-item label="电子邮箱"   prop="email">
+                    <el-input v-model="user.email"  ></el-input>
+                </el-form-item>
+                <el-form-item label="电话号码"   prop="tel" >
+                    <el-input v-model="user.tel"  ></el-input>
+                </el-form-item>
+            </el-form>
+            <el-button type="primary" @click="register('userForm')">注册</el-button>
+        </el-card>
+    </div>
+</div>

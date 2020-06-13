@@ -1,0 +1,97 @@
+
+
+<div th:fragment="html"> 
+
+<script> 
+
+ 
+</script>
+	 
+	<div class="imgAndInfo">
+	 
+	    <div class="imgInimgAndInfo">
+
+<!--			<img v-if="p.picture!=null" :src="url+ p.picture" class="bigImg">-->
+			<el-image
+					class="bigImg"
+					fit="scale-down"
+					:src="url+ p.picture"
+					:preview-src-list="[url+ p.picture]"
+			>
+			</el-image>
+	        <div class="smallImageDiv">
+                <img v-for="pi in p.productSingleImages" :src="'img/productSingle_small/'+pi.id+'.jpg'" :bigImageURL="'img/productSingle/'+pi.id+'.jpg'" class="smallImage">
+	        </div>
+	        <div class="img4load hidden" ></div>
+	    </div>
+	
+	
+	    <div class="infoInimgAndInfo">
+	         
+	        <div class="productTitle">
+	            {{p.name}}
+	        </div>
+	        <div class="productSubTitle">
+	            {{p.subTitle}}
+	        </div>
+	
+	
+	
+	        <div class="productPrice">
+	            <div class="juhuasuan">
+	                <span class="juhuasuanBig" >专业电竞外设</span>
+	                <span>来游友商城，<span class="juhuasuanTime">属于你的</span>专业电竞设备</span>
+	            </div>
+	
+	
+	
+	            <div class="productPriceDiv">
+	                <div class="gouwujuanDiv">
+						<i class="el-icon-magic-stick"></i>
+	                <span> 实物商品通用</span>
+	                 
+	                </div>
+	
+	                <div class="promotionDiv">
+	                    <span class="promotionPriceDesc">商品价格 </span>
+	                    <span class="promotionPriceYuan">¥</span>
+	                    <span class="promotionPrice">
+							{{p.price|formatMoneyFilter}}
+	                    </span>
+	                </div>
+	            </div>
+	        </div>
+	
+	        <div class="productSaleAndReviewNumber">
+	            <div>销量 <span class="redColor boldWord"> {{ p.saleCount }}</span></div>   
+	            <div>累计评价 <span class="redColor boldWord"> {{ reviewsCount }}</span></div>
+	        </div>
+	        <div class="productNumber">
+	            <span>数量</span>
+				<el-input-number v-model="cart.number"
+								 controls-position="right"
+								 :min="1"
+								 :max="p.quantity">
+				</el-input-number>
+	            <span>库存{{p.quantity}}件</span>
+	        </div>
+	        <div class="serviceCommitment">
+	            <span class="serviceCommitmentDesc">服务承诺</span>
+	            <span class="serviceCommitmentLink">
+	                <a href="#nowhere">正品保证</a>
+	                <a href="#nowhere">极速退款</a>
+	                <a href="#nowhere">赠运费险</a>
+	                <a href="#nowhere">七天无理由退换</a>
+	            </span>
+	        </div>    
+	         
+	        <div class="buyDiv">
+				<el-button type="primary"  @click="buy()" plain>购买</el-button>
+				<el-button type="danger"  @click="addCart()" plain>加入购物车</el-button>
+	        </div>
+	    </div>
+	     
+	    <div style="clear:both"></div>
+	     
+	</div>
+</div>

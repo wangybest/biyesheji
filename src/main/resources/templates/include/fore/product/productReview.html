@@ -1,0 +1,30 @@
+
+<div th:fragment="html"> 
+	<div class="productReviewDiv" v-show="showReview" >
+		<div class="productReviewTopPart">
+			<a  href="#nowhere" class="productReviewTopPartSelectedLink" @click="toggle2Detail">商品详情</a>
+			<a  href="#nowhere" class="selected">累计评价 {{reviewsCount}} <span class="productReviewTopReviewLinkNumber"></span> </a>
+		</div>
+		
+		<div class="productReviewContentPart">
+			<div class="productReviewItem" v-for="r in reviews">
+				<div class="productReviewItemDesc">
+					<div>
+						<el-rate  disabled v-model="r.value"></el-rate>
+					</div>
+					<div class="productReviewItemContent">
+						{{r.content }}
+					</div>
+					<div class="productReviewItemDate">
+						{{r.time|formatDateFilter('YYYY-MM-DD')}}
+					</div>
+				</div>
+				<div class="productReviewItemUserInfo">
+					<i class="el-icon-s-custom"></i><el-tag type="success">用户**{{r.userId}}</el-tag>
+				</div>
+			
+				<div style="clear:both"></div>			
+			</div>
+		</div>
+	</div>
+</div>

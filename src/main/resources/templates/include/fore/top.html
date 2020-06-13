@@ -1,0 +1,29 @@
+
+
+<nav class="top" th:fragment="html">
+
+	<el-link href="home" icon="el-icon-video-play" type="warning">电竞外设商城</el-link>
+
+	<span>欢迎您的到来</span>
+
+    <span th:if="${null!=session.user}">
+		<el-link href="#" icon="el-icon-user" th:text="${session.user.name}"></el-link>
+		<el-link href="/userinfo" icon="el-icon-edit-outline" >管理个人信息</el-link>
+		<el-link href="javascript:loginout()"  >退出</el-link>
+	</span>
+
+
+    <span th:if="${null==session.user}">
+
+		<el-link href="/userinfo" icon="el-icon-user-solid" >登录</el-link>
+		<el-link href="/register" icon="el-icon-edit" >注册</el-link>
+	</span>
+
+
+    <span class="pull-right">
+		<el-link href="/bought" icon="el-icon-document" >我的订单</el-link>
+		<el-link href="/cart" icon="el-icon-shopping-cart-full" >购物车</el-link>
+
+	</span>
+
+</nav>

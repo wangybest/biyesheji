@@ -1,0 +1,37 @@
+
+
+<div th:fragment="html"> 
+	<script>
+		$(function(){
+			var vue = new Vue({
+				el: '#workingArea',
+				data: {},
+				methods:{
+					pay:function () {
+						this.$message({
+							message: '支付成功',
+							type: 'success'
+						})
+					}
+				}
+			})
+		})
+	</script>
+	<div class="aliPayPageDiv">
+		<div class="aliPayPageLogo">
+			<div style="clear:both"></div>
+		</div>
+		
+		<div>
+			<span class="confirmMoneyText">下单成功，请付款</span>
+			
+		</div>
+		<div>
+			<img class="aliPayImg" src="img/site/alipay2wei.png">
+		</div>
+	
+		<div>
+			<el-button type="primary" @click="pay()">支付</el-button>
+		</div>
+	</div>
+</div>
