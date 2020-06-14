@@ -26,5 +26,6 @@ public class Goods {
     private BigDecimal price;
     private String info;
     private String picture;
+    private int sales;
 
 }

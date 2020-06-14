@@ -123,7 +123,7 @@
             <template slot-scope="scope">
                 <el-tag
                         effect="dark"
-                        :type="scope.row.status=='待发货'? 'danger': scope.row.status=='已发货'?'primary':'success'"
+                        :type="scope.row.status=='待发货'? 'danger': scope.row.status=='已发货'?'primary':scope.row.status=='已收货'?'success':'warning'"
                 >{{scope.row.status}}</el-tag>
             </template>
 

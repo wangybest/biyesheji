@@ -42,13 +42,17 @@ public class CartController {
 
     //结算购物车
     @PostMapping("count")
-    public BigDecimal count(@RequestBody List<Cart> cartList) {
+    public Result<BigDecimal> count(@RequestBody List<Cart> cartList) {
         BigDecimal totalPrice = new BigDecimal("0");
         for (Cart cart : cartList
         ) {
+            Goods goods = goodsService.queryGoods(cart.getGoodsId());
+            if (goods.getQuantity() < cart.getNumber()) {
+                return new Result<>(400, "抱歉" + goods.getName() + "库存不足了");
+            }
             totalPrice = totalPrice.add(cart.getPrice().multiply(new BigDecimal(cart.getNumber())));
         }
-        return totalPrice;
+        return new Result<>(totalPrice);
     }
 
 
@@ -64,7 +68,7 @@ public class CartController {
     public Result<String> addCart(@RequestBody Cart cart, HttpSession httpSession) {
         User user = (User) httpSession.getAttribute("user");
         cart.setUserId(user.getId());
-        System.out.println(cart);
+//        System.out.println(cart);
         Cart cart1=cartService.addCart(cart);
         if (cart1 != null) {
             return new Result<>("添加购物车成功");

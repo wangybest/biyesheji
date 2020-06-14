@@ -39,6 +39,7 @@ public class OrderController {
             //每个产品减相应库存
             Goods goods = goodsService.queryGoods(orderdetails.getGoodsId());
             goods.setQuantity(goods.getQuantity() - orderdetails.getNumber());
+            goods.setSales(goods.getSales() + orderdetails.getNumber());
             goodsService.saveGoods(goods);
         }
         if (orderService.addOrderD(orderdetailsList)) {
