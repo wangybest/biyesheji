@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import wangy.mall.entity.Cart;
-import wangy.mall.entity.Goods;
-import wangy.mall.entity.Goodstype;
-import wangy.mall.entity.User;
+import wangy.mall.entity.*;
 import wangy.mall.service.CartService;
 import wangy.mall.service.GoodsService;
 
@@ -101,8 +98,13 @@ public class GoodsController {
 
     //删除商品类型
     @DeleteMapping("type/{id}")
-    public void deleteGoodstype(@PathVariable int id) {
-        goodsService.deleteGoodstype(id);
+    public Result<String> deleteGoodstype(@PathVariable int id) {
+        try {
+            goodsService.deleteGoodstype(id);
+        } catch (Exception e) {
+            return new Result<>(400,"当前分类下还有商品时不能删除");
+        }
+        return new Result<>("删除成功");
     }
 
     //添加商品图片

@@ -1,6 +1,4 @@
-<!-- 模仿天猫整站springboot 教程 为how2j.cn 版权所有-->
-<!-- 本教程仅用于学习使用，切勿用于非法用途，由此引起一切后果与本站无关-->
-<!-- 供购买者学习，请勿私自传播，否则自行承担相关法律责任-->
+
 
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
@@ -45,6 +43,10 @@
                                 axios.post(url, this.goodstype).then(function (response) {
                                     vue.list();
                                     vue.dialogFormVisible = false;
+                                    vue.$message({
+                                        message: '添加分类成功',
+                                        type: 'success'
+                                    });
                                 });
                             } else {
                                 return false;
@@ -56,15 +58,17 @@
                     this.dialogFormVisible = true;
                 },
                 deleteBean: function (id) {
-                    // if(!checkDeleteLink())
-                    //     return;
                     var url = this.uri+"/"+id;
                     axios.delete(url).then(function(response){
-                        if(0!=response.data.length){
-                            alert(response.data);
+                        if(response.data.code==200){
+                            vue.$message({
+                                message: response.data.data,
+                                type: 'success'
+                            });
+                            vue.list();
                         }
                         else{
-                            vue.list();
+                            vue.$message.error(response.data.message);
                         }
                     });
                 },

@@ -59,6 +59,7 @@
                             });
                             console.log(response.data);
                         });
+                        this.commentTableVisible = false;
                         this.order.status = '已评价';
                         let url =  this.uri;
                         axios.put(url,this.order).then(function(response) {
