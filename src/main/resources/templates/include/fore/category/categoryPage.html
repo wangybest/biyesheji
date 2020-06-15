@@ -46,8 +46,8 @@
 	<img  src="http://localhost:8080/img/site/logo.gif"  height="150" width="300"  class="logo">
 	<form >
 		<div class="searchDiv">
-			<el-input v-model="selectVal"></el-input>
-			<el-button @click="queryData">搜索</el-button>
+			<input  v-model="selectVal">
+			<el-button  @click="queryData" type="text" size="mini">搜索</el-button>
 		</div>
 	</form>
 	<div id="category">

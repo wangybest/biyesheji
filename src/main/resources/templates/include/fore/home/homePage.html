@@ -15,7 +15,6 @@
                 el: '#workingArea',
                 data: data4Vue,
                 mounted:function(){ //mounted　表示这个 Vue 对象加载成功了
-                    linkDefaultActions();
                     this.load();
                 },
                 methods: {
@@ -60,8 +59,8 @@
     <img  src="http://localhost:8080/img/site/logo.gif"  height="150" width="300"  class="logo">
     <form >
         <div class="searchDiv">
-            <el-input v-model="selectVal"></el-input>
-            <el-button @click="queryData">搜索</el-button>
+            <input  v-model="selectVal">
+            <el-button  @click="queryData" type="text" size="mini">搜索</el-button>
         </div>
     </form>
     <div class="homepageDiv">
