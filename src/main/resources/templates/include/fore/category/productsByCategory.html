@@ -5,7 +5,7 @@
 			<div v-for="p in products"  class="productUnit" :price="p.price">
 				<div class="productUnitFrame">
 					<a :href="'product?pid='+p.id">
-						<img class="productImage" :src="'http://localhost:8080/img/photos/'+p.picture">
+						<img class="productImage" :src="'img/photos/'+p.picture">
 					</a>
 					<span class="productPrice">价格：{{p.price}} </span>
 					

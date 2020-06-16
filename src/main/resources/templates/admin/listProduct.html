@@ -12,7 +12,7 @@
             goods: [],
             goodsType: [],
             agoods: {id:'',name:'',typeName:'',quantity:'',price:'',info:'',picture:''},
-            url:'http://localhost:8080/img/photos/',
+            url:'img/photos/',
             dialogFormVisible:false,
             photoFormVisible:false,
             pagesize:4,
@@ -109,7 +109,7 @@
     <br>
     <br>
     <el-table
-            :data="goods.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            :data="goods"
             max-height="550"
             style="width: 100%">
         <el-table-column
@@ -184,13 +184,13 @@
             </template>
         </el-table-column>
     </el-table>
-    <el-pagination
+   <!-- <el-pagination
             background
             :page-size="pagesize"
             :total="goods.length"
             @current-change="current_change"
     >
-    </el-pagination>
+    </el-pagination>-->
 
     <el-dialog title="产品属性" :visible.sync="dialogFormVisible">
         <el-form   :model="agoods"  size="medium"  :rules="rules"  ref="goodsForm">

@@ -77,7 +77,7 @@
     <br>
 
     <el-table
-            :data="beans.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            :data="beans"
             max-height="550"
             style="width: 100%">
         <el-table-column
@@ -145,13 +145,13 @@
             </template>
         </el-table-column>
     </el-table>
-    <el-pagination
+<!--    <el-pagination
             background
             :total="beans.length"
             :page-size="pagesize"
             @current-change="current_change"
     >
-    </el-pagination>
+    </el-pagination>-->
 
     <el-dialog title="订单详情" :visible.sync="ordersTableVisible">
         <el-table :data="orderItems"

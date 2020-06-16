@@ -47,7 +47,7 @@
     <br>
     <br>
     <el-table
-            :data="beans.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            :data="beans"
             stripe
             max-height="550"
             style="width: 100%"
@@ -88,13 +88,13 @@
                 width="220">
         </el-table-column>
     </el-table>
-    <el-pagination
+ <!--   <el-pagination
             background
             :page-size="pagesize"
             :total="beans.length"
             @current-change="current_change"
            >
-    </el-pagination>
+    </el-pagination>-->
 
 
 

@@ -114,7 +114,6 @@ public class GoodsController {
         this.deletePicture(id);
         //判断文件夹是否存在,不存在则创建
         File file = new File(filePath);
-
         if (!file.exists()) {
             file.mkdirs();
         }
